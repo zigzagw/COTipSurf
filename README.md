@@ -1,2 +1,2 @@
-# COTipSurf
-py_dat_reader.ipynb - extracting data from Createc DAT files.
+# Createc DAT to numpy
+readDAT.py - extracting data from Createc DAT files.
