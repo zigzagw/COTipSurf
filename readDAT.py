@@ -90,8 +90,11 @@ for file in files:
 	y = np.frombuffer(x, dtype=np.float32 ).transpose()
 	y=y[1:]
 	y=y[:-4*Header['ScanPixels_X']+1];
-	y[:100]
-	mat_image=y.reshape(-1,Header['ScanPixels_X']);
+	#because some files have corrupted length we continue it with zeros to obtain coorect reshape to 2D	
+	y_round_size=int(np.ceil(float(len(y))/float(Header['ScanPixels_X']))*Header['ScanPixels_X'])
+	y_round=np.zeros(y_round_size);
+	y_round[:len(y)]=y
+	mat_image=y_round.reshape(-1,Header['ScanPixels_X']);
 	y_size=Header['ScanPixels_Y']
 	pic1=mat_image[:y_size-1,:]
 	pic2=mat_image[y_size:2*y_size-1,:]
