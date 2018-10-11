@@ -96,9 +96,9 @@ for file in files:
 	y_round[:len(y)]=y
 	mat_image=y_round.reshape(-1,Header['ScanPixels_X']);
 	y_size=Header['ScanPixels_Y']
-	pic1=mat_image[:y_size-1,:]
-	pic2=mat_image[y_size:2*y_size-1,:]
-	pic3=mat_image[2*y_size:3*y_size-1,:]
+	pic1=mat_image[:y_size,:]
+	pic2=mat_image[y_size:2*y_size,:]
+	pic3=mat_image[2*y_size:3*y_size,:]
 	pic4=mat_image[3*y_size:,:] 
 	output_dir=ndir+'npy_png/'
 	if not os.path.exists(output_dir):
