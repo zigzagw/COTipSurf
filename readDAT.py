@@ -106,15 +106,7 @@ for file in files:
 	pic2_crop=pic2[ind_list[0],:] 
 	pic3_crop=pic3[ind_list[0],:] 
 	pic4_crop=pic4[ind_list[0],:]
-	# inverting chanels with negative values
-	if (np.sum(pic1_crop) < 0.0):
-		pic1_crop=-pic1_crop
-	if (np.sum(pic2_crop) < 0.0):
-		pic2_crop=-pic2_crop
-	if (np.sum(pic3_crop) < 0.0):
-		pic3_crop=-pic3_crop
-	if (np.sum(pic4_crop) < 0.0):
-		pic4_crop=-pic4_crop    
+	
 	# making 3d array of 4 channels with crop images
 	picture=np.dstack((pic1_crop, pic2_crop,pic3_crop,pic4_crop)) 
 
