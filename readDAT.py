@@ -20,7 +20,7 @@ for file in files:
 	ndir, nfile  = os.path.split(file)
 	ndir=ndir+'/'
 	try:
-   		with open(file, mode='rb') as binary_file:
+		with open(file, mode='rb') as binary_file:
 			data = binary_file.read() 
 	except IOError as error:              
 		print('oops! File '+nfile+' can not be read.')     
@@ -74,9 +74,9 @@ for file in files:
 	Header['PiezoX'] = float(SplittedLine.loc[SplittedLine['parameter'] == b'Xpiezoconst'].value.item())
 
 	if STMAFMVersion == 1:
-	    BytePerPixel = 2
-	    # Header + 2 unused "NULL"-Bytes
-	    data_start=header_size+2
+		BytePerPixel = 2
+		# Header + 2 unused "NULL"-Bytes
+		data_start=header_size+2
 	elif STMAFMVersion == 2:
 		BytePerPixel = 4
 		# Header + 4 unused "NULL"-Bytes
@@ -100,15 +100,46 @@ for file in files:
 	pic2=mat_image[y_size:2*y_size,:]
 	pic3=mat_image[2*y_size:3*y_size,:]
 	pic4=mat_image[3*y_size:,:] 
+	# croping image from rows with zeros
+	ind_list=np.where(~(pic1 == 0.0).all(axis=1))
+	pic1_crop=pic1[ind_list[0],:]
+	pic2_crop=pic2[ind_list[0],:] 
+	pic3_crop=pic3[ind_list[0],:] 
+	pic4_crop=pic4[ind_list[0],:]
+	# inverting chanels with negative values
+	if (np.sum(pic1_crop) < 0.0):
+		pic1_crop=-pic1_crop
+	if (np.sum(pic2_crop) < 0.0):
+		pic2_crop=-pic2_crop
+	if (np.sum(pic3_crop) < 0.0):
+		pic3_crop=-pic3_crop
+	if (np.sum(pic4_crop) < 0.0):
+		pic4_crop=-pic4_crop    
+	# making 3d array of 4 channels with crop images
+	picture=np.dstack((pic1_crop, pic2_crop,pic3_crop,pic4_crop)) 
+
 	output_dir=ndir+'npy_png/'
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
 	file_npy=nfile[:-3]+'npy'
 	file_png=nfile[:-3]+'png'
-	np.save(output_dir+file_npy, pic2)
+	np.save(output_dir+file_npy, picture)
 	print(output_dir+file_npy)
-	plt.imshow(pic2)
+	fig =plt.figure(figsize=(24, 4))
+	columns = 4
+	rows = 1
+	fig.add_subplot(rows,columns ,1)
+	plt.imshow(picture[:,:,0])
 	plt.colorbar()
+	fig.add_subplot(rows,columns ,2)
+	plt.imshow(picture[:,:,1])
+	plt.colorbar()
+	fig.add_subplot(rows,columns ,3)
+	plt.imshow(picture[:,:,2])
+	plt.colorbar()
+	fig.add_subplot(rows,columns ,4)
+	plt.imshow(picture[:,:,3])
+	plt.colorbar()	
 	plt.savefig(output_dir+file_png)
 	plt.close()
  
